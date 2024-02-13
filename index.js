@@ -8,88 +8,44 @@ const PATTERNS = [
   [0, 4, 8],
   [2, 4, 6],
 ];
+const form = document.querySelector("form");
+const resetBtn = document.querySelector("#resetBtn");
+let player1;
+let player2;
 
 const createPlayer = (name, symbol) => {
   return { name, symbol };
 };
 
-const GameBoard = (function () {
-  let gamePrinted = "";
+const Gameboard = (() => {
+  const container = document.querySelector(".Board-container");
+  const gameboard = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
-  let gameBoard = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-
-  function setPosition(position, player) {
-    //If the position is selected by the other player,
-    //the current player must select other position with a blank space
-    if (
-      typeof gameBoard[position] == "number" &&
-      position >= 0 &&
-      position <= 8
-    ) {
-      gameBoard[position] = player.symbol;
-      return true;
-    } else {
-      return false;
-    }
+  function setSymbolOnPosition(position, symbol) {
+    gameboard[position] = symbol;
   }
 
-  function printGame() {
-    gamePrinted = "";
-    gameBoard.forEach((position, index) => {
-      if (index == 2 || index == 5 || index == 8) {
-        gamePrinted += `${position ?? " | "} \n`;
-      } else {
-        gamePrinted += `${position ?? " | "} `;
+  function render(endGame = false) {
+    container.innerHTML = "";
+    gameboard.forEach((element, index) => {
+      const square = document.createElement("div");
+      square.setAttribute("class", "Board-square");
+      square.setAttribute("data-position", index);
+      square.textContent = typeof element == "number" ? "" : element;
+      if (typeof element == "number" && !endGame) {
+        square.addEventListener("click", Game.handleSelection);
       }
+      container.appendChild(square);
     });
-
-    console.log(gamePrinted + "\n");
-  }
-
-  return { gameBoard, setPosition, printGame };
-})();
-
-const Game = (function () {
-  const player_1 = createPlayer("player1", "X");
-  const player_2 = createPlayer("player2", "O");
-
-  let currentMovement = 0;
-  let endGame = false;
-
-  let currentPlayer = player_1;
-
-  function init() {
-    //If the game is not finished and the movement are not nine then
-    while (!endGame && currentMovement != 9) {
-      let isSetted = false;
-
-      //If the position is not selected then
-      while (!isSetted) {
-        const positionSelected = askPlayerPosition();
-        isSetted = GameBoard.setPosition(positionSelected, currentPlayer);
-      }
-
-      GameBoard.printGame();
-
-      const response = checkWinner();
-
-      if (response) {
-        alert(currentPlayer.name + "won the game");
-      } else {
-        changeCurrentPlayer();
-        currentMovement++;
-      }
-    }
   }
 
   function checkWinner() {
     let response = false;
     PATTERNS.forEach((pattern) => {
       if (
-        GameBoard.gameBoard[pattern[0]] == GameBoard.gameBoard[pattern[1]] &&
-        GameBoard.gameBoard[pattern[1]] == GameBoard.gameBoard[pattern[2]]
+        gameboard[pattern[0]] == gameboard[pattern[1]] &&
+        gameboard[pattern[1]] == gameboard[pattern[2]]
       ) {
-        endGame = true;
         response = true;
       }
     });
@@ -97,18 +53,66 @@ const Game = (function () {
     return response;
   }
 
-  function changeCurrentPlayer() {
-    if (currentPlayer == player_1) {
-      currentPlayer = player_2;
-    } else {
-      currentPlayer = player_1;
+  function clear() {
+    for (let i = 0; i < gameboard.length; i++) {
+      gameboard[i] = i;
     }
+    render();
   }
 
-  function askPlayerPosition() {
-    let position = prompt(`Choose your position ${currentPlayer.name}`);
-    return position;
-  }
-
-  init();
+  return { setSymbolOnPosition, render, clear, checkWinner };
 })();
+
+const Game = (() => {
+  const dialog = document.querySelector("dialog");
+  let movement = 0;
+  let currentPlayer;
+
+  function init() {
+    currentPlayer = player1;
+    Gameboard.render();
+  }
+
+  function changePlayer() {
+    currentPlayer = currentPlayer === player1 ? player2 : player1;
+  }
+
+  function handleSelection() {
+    movement++;
+    const position = parseInt(this.getAttribute("data-position"));
+    Gameboard.setSymbolOnPosition(position, currentPlayer.symbol);
+    checkEndGame();
+    changePlayer();
+  }
+
+  function checkEndGame() {
+    let isAWinner = Gameboard.checkWinner();
+    let endGame = (movement == 9 && !isAWinner) || isAWinner || false;
+    console.log(movement);
+    if (endGame) showMessage(isAWinner);
+    Gameboard.render(endGame);
+  }
+
+  function showMessage(isAWinner) {
+    dialog.children[0].textContent = isAWinner
+      ? `${currentPlayer.symbol} ${currentPlayer.name} won ${currentPlayer.symbol}`
+      : `It's a tie`;
+    dialog.showModal();
+  }
+
+  function reset() {
+    Gameboard.clear();
+    currentPlayer = player1;
+    movement = 0;
+  }
+
+  return { handleSelection, init, reset };
+})();
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  player1 = createPlayer(form.elements["player1"].value, "✖️");
+  player2 = createPlayer(form.elements["player2"].value, "⭕");
+  Game.init();
+});
+resetBtn.addEventListener("click", Game.reset);

@@ -7,6 +7,62 @@
     <title>Tic Tac Toe</title>
   </head>
   <body>
+    <div class="Game Container">
+      <div class="Game-options">
+        <form>
+          <div class="Game-group">
+            <div>
+              <label for="player1">Player One ✖️</label>
+              <input
+                type="text"
+                name="player1"
+                id="player1"
+                placeholder="Enter a name"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="player1">Player Two ⭕</label>
+              <input
+                type="text"
+                name="player2"
+                id="player2"
+                placeholder="Enter a name"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="Game-group">
+            <button type="submit" class="Button Button--success">
+              Start Game
+            </button>
+            <button type="button" id="resetBtn" class="Button Button--danger">
+              Reset Game
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="Game-board">
+        <div class="Board-container">
+          <div class="Board-square Board-square--inactive"></div>
+          <div class="Board-square Board-square--inactive"></div>
+          <div class="Board-square Board-square--inactive"></div>
+          <div class="Board-square Board-square--inactive"></div>
+          <div class="Board-square Board-square--inactive"></div>
+          <div class="Board-square Board-square--inactive"></div>
+          <div class="Board-square Board-square--inactive"></div>
+          <div class="Board-square Board-square--inactive"></div>
+          <div class="Board-square Board-square--inactive"></div>
+        </div>
+      </div>
+    </div>
+
+    <dialog id="dialog">
+      <h2></h2>
+    </dialog>
+
     <script src="./index.js"></script>
   </body>
 </html>

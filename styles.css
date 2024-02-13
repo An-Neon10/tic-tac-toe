@@ -1,8 +1,31 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
+:root {
+  --white-50-color: #f8fafc;
+  --white-100-color: #f1f5f9;
+  --gray-900-color: #111827;
+  --gray-800-color: #1e293b;
+  --slate-800-color: #1e293b;
+  --lime-800-color: #3f6212;
+  --red-800-color: #991b1b;
+  --red-500-color: #ef4444;
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 0.8rem;
+  --spacing-md: 1.1rem;
+  --spacing-lg: 1.4rem;
+  --spacing-xl: 1.7rem;
+}
+
+body {
+  height: 100vh;
+  background: var(--gray-900-color);
+  color: var(--white-100-color);
+}
+
 html {
   box-sizing: border-box;
   font-size: 16px;
+  font-family: "Roboto", sans-serif;
 }
 
 *,
@@ -34,4 +57,115 @@ ul {
 img {
   max-width: 100%;
   height: auto;
+}
+
+.Container {
+  width: 100%;
+  padding: var(--spacing-xl);
+  min-width: 320px;
+}
+
+.Game {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.Game-options {
+  display: flex;
+  justify-content: center;
+}
+
+.Game-options form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.Game-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.Board-container {
+  width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.Board-square {
+  border-radius: 0.4rem;
+  height: 150px;
+  width: 150px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 3rem;
+  background-color: var(--slate-800-color);
+}
+
+.Board-square--inactive {
+  background-color: var(--red-800-color);
+}
+
+.Button {
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 0.8rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.Button--success {
+  background: var(--lime-800-color);
+  color: white;
+}
+
+.Button--danger {
+  background-color: var(--red-800-color);
+  color: white;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+}
+
+input {
+  padding: 0.5rem 1rem;
+  font-size: 1.2rem;
+  border: none;
+  background: var(--white-100-color);
+  border-radius: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+input:user-invalid {
+  border: 0.155rem solid var(--red-800-color);
+}
+
+input:focus {
+  outline: none;
+}
+
+#dialog {
+  border: none;
+  background: var(--gray-800-color);
+  border-radius: 0.8rem;
+  padding: var(--spacing-md);
+  width: min(400px, 100%);
+  color: white;
+  text-align: center;
+}
+
+#dialog::backdrop {
+  background-color: #111827;
+  opacity: 0.75;
 }
